@@ -115,7 +115,7 @@ def generate_commit_hash(repo):
 def generate_show_script(repo, commit_hash):
     bash = '#!/bin/bash\n'
     bash += 'git -C "{}" checkout {}\n'.format(repo, commit_hash)
-    bash += 'cd "{}"'.format(repo)
+    bash += 'cd "{}"\n'.format(repo)
     bash += 'echo "Modified files:"\n'
     bash += 'git --no-pager diff --stat {}^1 {}\n'.format(commit_hash, commit_hash)
     bash += 'exec $SHELL\n'
