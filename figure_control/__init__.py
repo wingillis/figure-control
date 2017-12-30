@@ -31,6 +31,7 @@ class FigureControl(object):
         return diff
 
     def createSavePath(self):
+        '''If save path doesn't exist, create it'''
         sp = self.getSavePath()
         if not os.path.exists(sp):
             os.makedirs(sp)

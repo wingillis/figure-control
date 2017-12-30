@@ -17,6 +17,9 @@ their work. Folders are created that are named by the current date and the
 most current commit logged in the associated git repository. Check out below
 to see how to use the CLI interface.
 
+Proper use of this repository will make it very easy to track your progress
+through figure generation, so you don't have to overwrite figures any more.
+
 ## Installation
 
 Clone this repository to your local computer. Navigate to `figure-control`'s
@@ -69,3 +72,44 @@ save_path = figure_control('/path/to/repo')
 ```
 
 and it will execute and parse the CLI to give you the path to save your figures.
+
+
+### Python
+
+The module is slightly more feature-rich than the CLI. For instance, you can
+run auto-commits. To use the `FigureControl` class:
+
+```python
+from figure_control import FigureControl as FC
+
+fig_ctrl = FC('/path/to/repo')
+# change some code in the repository, next time you get a save path, you will
+# get a warning that code has changed in the repository
+# commit the changes, with the changes as the commit message like so:
+fig_ctrl.autoCommit()
+
+# get the save path
+save_path = fig_ctrl.createSavePath()
+
+# register a save function
+def save(path, name, fig, **kwargs):
+  # make sure it accepts a path parameter
+  fig.savefig(os.path.join(path, name + '.png'), **kwargs)
+  fig.savefig(os.path.join(path, name + '.pdf'))
+
+# this registers a function so that you can call it with `fig_ctrl.save()`
+fig_ctrl.registerSaver(save)
+
+
+# plot some data with matplotlib
+import matplotlib.pyplot as plt
+fig1 = plt.figure()
+plt.plot(range(10))
+
+# this will save it in the dir associated with the repo's current commit hash
+fig_ctrl.save('line', fig1, dpi=300)
+```
+
+Every time `getSavePath` or `createSavePath` is run, it will check if any
+code has changed in the repository. You can then `autoCommit` and it will
+update all necessary settings in the class.
