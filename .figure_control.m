@@ -3,9 +3,9 @@ function [save_path] = figure_control(repo, isfinal)
     isfinal = false;
   end
   if isfinal
-    [status, cmdout] = system(sprintf('"/Users/wgillis/anaconda2/bin/figure-control" -f --repo="%s"', repo));
+    [status, cmdout] = system(sprintf('{pypath} -f --repo="%s"', repo));
   else
-    [status, cmdout] = system(sprintf('"/Users/wgillis/anaconda2/bin/figure-control" --repo="%s"', repo));
+    [status, cmdout] = system(sprintf('{pypath} --repo="%s"', repo));
   end
   strs = strsplit(cmdout, '\n');
   strs = strs(1:end-1);
