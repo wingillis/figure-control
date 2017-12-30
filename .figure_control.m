@@ -12,10 +12,10 @@ function [save_path] = figure_control(repo, isfinal, conf_path)
   strs = strsplit(cmdout, '\n');
   strs = strs(1:end-1);
   if numel(strs) > 1 && status == 0
-    if contains(strs{1}, 'Created dir')
-      disp(strs{1});
-    elseif contains(strs{1}, 'Your repo:')
+    if contains(strs{1}, 'Your repo:')
       warning(strrep(strcat(strs{1:2}), sprintf('\t'), ' '));
+    else
+      fprintf([strjoin(strs{1:end-1}, '\n') '\n']);
     end
   end
   if status == 0
