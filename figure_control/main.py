@@ -120,6 +120,7 @@ def auto_commit(repo_path, max_commit_len=500):
     sh.check_call('git -C "{}" add --all'.format(repo_path), shell=True)
     # only keep max_commit_len characters tho
     sh.check_call('git -C "{}" commit -m "{}"'.format(repo_path, diff_to_commit.decode('utf-8')[:max_commit_len]), shell=True)
+    return diff_to_commit[:max_commit_len]
 
 if __name__ == '__main__':
     main()

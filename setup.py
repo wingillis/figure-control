@@ -35,7 +35,7 @@ setup(
     url="https://github.com/wingillis/figure-control",   # project home page, if any
     install_requires=['click', 'PyYAML'],
     entry_points={
-        'console_scripts': ['figure-control = figure_control:main']
+        'console_scripts': ['figure-control = figure_control.main:main']
     }
 
     # could also include long_description, download_url, classifiers, etc.
