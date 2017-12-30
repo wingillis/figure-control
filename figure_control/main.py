@@ -118,7 +118,12 @@ def generate_show_script(repo, commit_hash):
     bash += 'cd "{}"\n'.format(repo)
     bash += 'echo "Modified files:"\n'
     bash += 'git --no-pager diff --stat {}^1 {}\n'.format(commit_hash, commit_hash)
-    bash += 'exec $SHELL\n'
+    bash += '''if [[ "$0" != "$BASH_SOURCE" ]]; then
+        echo "Sourced"
+    else
+        exec $SHELL
+    fi
+    '''
     return bash
 
 def auto_commit(repo_path, max_commit_len=500):
