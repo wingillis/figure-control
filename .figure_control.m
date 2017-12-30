@@ -1,4 +1,9 @@
 function [save_path] = figure_control(repo, isfinal, conf_path)
+  %% returns the save path for the specific commit associated with your
+  % git repo
+  % example usage for convencience:
+  % getProjSave = @() figure_control('/path/to/repo', false);
+  % then call `getProjSave()` whenever you're about to save a figure
   cmdstr = sprintf('{pypath} --repo="%s"', repo);
   if nargin < 2 || isempty(isfinal) || ~isfinal
     % do nothing

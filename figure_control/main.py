@@ -47,7 +47,8 @@ def main(repo, final, config):
             click.echo('Your repo: {}\n\thas some unstaged changes, it is recommended that you commit them'.format(repo))
 
     commit_hash = generate_commit_hash(repo)
-    save_path = assemble_save_path(base_path, commit_hash, final)
+    commit_count = get_commit_count(repo, commit_hash)
+    save_path = assemble_save_path(base_path, commit_hash, commit_count, final)
     # check if save_path exists
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -80,33 +81,31 @@ def load_config(repo, conf_glob=''):
     assert 'figure-control' in options, 'Required key figure-control not in config file: ' + conf
     return options['figure-control']
 
-def assemble_save_path(base_path, commit_hash, is_final_fig):
-    # subdir is based on type of analysis happening
+def assemble_save_path(base_path, commit_hash, commit_count, is_final_fig):
+    '''Creates a subdir path based on the commit hash and commit count'''
     dirtype = 'final' if is_final_fig else 'exploratory'
     today = date.today().strftime('%m-%d-%Y')
-    return join(base_path, dirtype, today + '-' + commit_hash)
+    dirname = '{}-{}-{}'.format(commit_count, today, commit_hash)
+    return join(base_path, dirtype, dirname)
 
-def repo_is_dirty(repo_path):
-    output = sh.check_output('git -C "{}" status --porcelain'.format(repo_path), shell=True)
+def repo_is_dirty(repo):
+    '''Returns True if there are unstaged changes in the specified repo'''
+    output = sh.check_output('git -C "{}" status --porcelain'.format(repo), shell=True)
     return output != b''
 
 def generate_commit_hash(repo):
     return sh.check_output('git -C "{}" rev-parse HEAD | cut -c1-7'.format(repo),
                            shell=True).decode('utf-8').strip()
 
-# return a pickled save function, so that any language can pass the pickled
-# save function as a parameter, here we can unpickle it, and use it to save
-# the figures - this won't work, but the idea could be interesting
+def get_commit_count(repo, commit_hash):
+    '''Get the number of commits made up to the commit hash'''
+    return sh.check_output('git -C "{}" rev-list --count {}'.format(repo, commit_hash),
+                           shell=True).decode('utf-8').strip()
+# maybe add a function to auto-create a config file for a repo
 
-# maybe add a function to create a config file for a repo
-
-# if there is a change in the code that hasn't been committed warn the user
-# and auto-commit code
-# save files generated with unstaged code into a directory that contains the
+# TODO: save files generated with unstaged code into a directory that contains the
 # most recently committed code hash + '-unstaged'
 # then you can commit your code, and rename the folder with the current commit hash
-
-# do I add the date of the commit to the save path???
 
 # add an option in the config to show the commit that created the figures
 
@@ -119,11 +118,11 @@ def generate_show_script(repo, commit_hash):
     bash += 'echo "Modified files:"\n'
     bash += 'git --no-pager diff --stat {}^1 {}\n'.format(commit_hash, commit_hash)
     bash += '''if [[ "$0" != "$BASH_SOURCE" ]]; then
-        echo "Sourced"
-    else
-        exec $SHELL
-    fi
-    '''
+    echo "Sourced"
+else
+    exec $SHELL
+fi
+'''
     return bash
 
 def auto_commit(repo_path, max_commit_len=500):
