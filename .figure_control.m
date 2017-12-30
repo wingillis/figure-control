@@ -14,12 +14,14 @@ function [save_path] = figure_control(repo, isfinal, conf_path)
   if numel(strs) > 1 && status == 0
     if contains(strs{1}, 'Created dir')
       disp(strs{1});
-      save_path = strs{2};
     elseif contains(strs{1}, 'Your repo:')
       warning(strrep(strcat(strs{1:2}), sprintf('\t'), ' '));
-      save_path = strs{end};
     end
-  elseif status == 0
-    save_path = strs{1};
+  end
+  if status == 0
+    save_path = strs{end};
+  else
+    warning('Error in figure-control call');
+    disp(cmdout);
   end
 end % function
