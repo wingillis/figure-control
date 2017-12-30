@@ -34,7 +34,7 @@ def main(repo, final):
     assert 'path' in options, 'No destination directory specified in `path`'
     base_path = clean_path(options['path'])
 
-    if repo_is_clean(repo):
+    if repo_is_dirty(repo):
         click.echo('Your repo: {}\n\thas some unstaged changes, it is recommended that you commit them'.format(repo))
 
     save_path = assemble_save_path(repo, base_path, final)
@@ -63,9 +63,9 @@ def assemble_save_path(repo_path, base_path, is_final_fig):
     dirtype = 'final' if is_final_fig else 'exploratory'
     return join(base_path, commit_hash, dirtype)
 
-def repo_is_clean(repo_path):
+def repo_is_dirty(repo_path):
     output = sh.check_output('git -C "{}" status --porcelain'.format(repo_path), shell=True)
-    return output == b''
+    return output != b''
 
 # return a pickled save function, so that any language can pass the pickled
 # save function as a parameter, here we can unpickle it, and use it to save
