@@ -1,12 +1,14 @@
-function [save_path] = figure_control(repo, isfinal)
-  if nargin < 2
-    isfinal = false;
-  end
-  if isfinal
-    [status, cmdout] = system(sprintf('{pypath} -f --repo="%s"', repo));
+function [save_path] = figure_control(repo, isfinal, conf_path)
+  cmdstr = sprintf('{pypath} --repo="%s"', repo);
+  if nargin < 2 || isempty(isfinal) || ~isfinal
+    % do nothing
   else
-    [status, cmdout] = system(sprintf('{pypath} --repo="%s"', repo));
+    cmdstr = [cmdstr ' -f'];
   end
+  if nargin == 3
+    cmdstr = sprintf([cmdstr ' --config="%s"'], conf_path);
+  end
+  [status, cmdout] = system(cmdstr);
   strs = strsplit(cmdout, '\n');
   strs = strs(1:end-1);
   if numel(strs) > 1 && status == 0
