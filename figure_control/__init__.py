@@ -1,6 +1,6 @@
 from figure_control.main import (clean_path, generate_commit_hash, repo_is_dirty,
     assemble_save_path, load_config, is_git_repo, auto_commit, generate_show_script,
-    get_commit_count)
+    get_commit_count, git_root_dir)
 import os
 import stat
 from os.path import join
@@ -13,6 +13,7 @@ class FigureControl(object):
         self.repo = clean_path(repo)
         assert os.path.exists(self.repo), 'Specified repo does not exist'
         assert is_git_repo(self.repo), 'Not a git repo'
+        self.repo = git_root_dir(self.repo)
 
         self.options = load_config(self.repo, config_name)
         assert 'path' in self.options, 'No save path specified'

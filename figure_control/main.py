@@ -33,6 +33,7 @@ def main(repo, final, config):
     repo = clean_path(repo)
     assert os.path.exists(repo), 'Sorry repo does not exist, ' + repo
     assert is_git_repo(repo), 'Specified path is not a git repository: ' + repo
+    repo = git_root_dir(repo)
     # the config file should be in the code directory
     options = load_config(repo, config)
 
@@ -66,7 +67,7 @@ def main(repo, final, config):
     click.echo(save_path)
 
 def is_git_repo(path):
-    return os.path.exists(join(path, '.git'))
+    return os.path.exists(join(path, '.git')) or sh.check_output('git -C "{}" rev-parse --git-dir 2> /dev/null'.format(path), shell=True) != b''
 
 def load_config(repo, conf_glob=''):
     if not conf_glob:
@@ -101,6 +102,9 @@ def get_commit_count(repo, commit_hash):
     '''Get the number of commits made up to the commit hash'''
     return sh.check_output('git -C "{}" rev-list --count {}'.format(repo, commit_hash),
                            shell=True).decode('utf-8').strip()
+
+def git_root_dir(path):
+    return sh.check_output('git -C "{}" rev-parse --show-toplevel'.format(path), shell=True).decode('utf-8').strip()
 # maybe add a function to auto-create a config file for a repo
 
 # TODO: save files generated with unstaged code into a directory that contains the
