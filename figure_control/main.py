@@ -53,14 +53,14 @@ def main(repo, final, config):
         os.makedirs(save_path)
         click.echo('Created directory for saving')
 
-    if options.get('executable', False):
-        # make an executable that goes to the code folder and specific commit
-        exec_contents = generate_show_script(repo, commit_hash)
-        exec_file_path = join(save_path, 'goto-commit-{}'.format(commit_hash))
-        with open(exec_file_path, 'w') as exec_file:
-            exec_file.write(exec_contents)
-        st = os.stat(exec_file_path)
-        os.chmod(exec_file_path, st.st_mode | stat.S_IEXEC)
+        if options.get('executable', False):
+            # make an executable that goes to the code folder and specific commit
+            exec_contents = generate_show_script(repo, commit_hash)
+            exec_file_path = join(save_path, 'goto-commit-{}'.format(commit_hash))
+            with open(exec_file_path, 'w') as exec_file:
+                exec_file.write(exec_contents)
+            st = os.stat(exec_file_path)
+            os.chmod(exec_file_path, st.st_mode | stat.S_IEXEC)
 
     click.echo(save_path)
 
