@@ -40,7 +40,11 @@ def main(repo, final, config):
     base_path = clean_path(options['path'])
 
     if repo_is_dirty(repo):
-        click.echo('Your repo: {}\n\thas some unstaged changes, it is recommended that you commit them'.format(repo))
+        if options.get('auto-commit', False):
+            click.echo('Auto commit is on, committing changes...')
+            auto_commit(repo)
+        else:
+            click.echo('Your repo: {}\n\thas some unstaged changes, it is recommended that you commit them'.format(repo))
 
     commit_hash = generate_commit_hash(repo)
     save_path = assemble_save_path(base_path, commit_hash, final)
@@ -119,11 +123,11 @@ def generate_show_script(repo, commit_hash):
 
 def auto_commit(repo_path, max_commit_len=500):
     # get what changed in the code
-    diff_to_commit = sh.check_output('git -C "{}" diff HEAD | egrep \'^\\+|^-{{1}}[^-]\''.format(repo_path), shell=True)
+    diff_to_commit = sh.check_output('git -C "{}" diff HEAD | egrep \'^\\+|^-{{1}}[^-]\''.format(repo_path), shell=True).decode('utf-8')
     # now commit with the diff as the message
     sh.check_call('git -C "{}" add --all'.format(repo_path), shell=True)
     # only keep max_commit_len characters tho
-    sh.check_call('git -C "{}" commit -m "{}"'.format(repo_path, diff_to_commit.decode('utf-8')[:max_commit_len]), shell=True)
+    sh.check_call('git -C "{}" commit -m "{}"'.format(repo_path, diff_to_commit[:max_commit_len]), shell=True)
     return diff_to_commit[:max_commit_len]
 
 if __name__ == '__main__':

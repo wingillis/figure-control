@@ -49,6 +49,9 @@ figure-control:
   # this option allows you to create script to automatically take you to the
   # commit that created the figures in a specific folder
   executable: true
+  # this option will allow the code to automatically commit any unstaged changes
+  # that you have made
+  auto-commit: true
 ```
 
 To get a save directory, run:

@@ -21,7 +21,11 @@ class FigureControl(object):
 
     def getSavePath(self):
         if repo_is_dirty(self.repo):
-            print('Warning: repo has changes, it is recommended you commit them')
+            if self.options.get('auto-commit', False):
+                print('Auto-commit is on, committing repo changes...')
+                self.autoCommit()
+            else:
+                print('Warning: repo has changes, it is recommended you commit them')
         return assemble_save_path(self.options['path'], self.hash, self.is_final)
 
     def autoCommit(self):
