@@ -48,6 +48,8 @@ figure-control:
   path: /path/to/figure/output/
   # this option allows you to create script to automatically take you to the
   # commit that created the figures in a specific folder
+  # you can either double-click on the script, or source it from the terminal
+  # i.e: `. ./goto-commit-42fbc33` or `source ./goto-commit-42fbc33`
   executable: true
   # this option will allow the code to automatically commit any unstaged changes
   # that you have made
