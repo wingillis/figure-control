@@ -47,3 +47,25 @@ figure-control:
   # commit that created the figures in a specific folder
   executable: true
 ```
+
+To get a save directory, run:
+
+`figure-control --repo="/path/to/your/repo"`
+
+And a result like this should follow:
+
+`/path/to/figure/output/exploratory/12-30-2017-f8f5853`
+
+And a new directory will be created with today's date and the latest commit
+for this repo.
+
+### Matlab
+
+A helper function in `matlab` is installed as well. To use it in matlab,
+add the `figure-control` directory to your matlab path, and type:
+
+```matlab
+save_path = figure_control('/path/to/repo')
+```
+
+and it will execute and parse the CLI to give you the path to save your figures.
