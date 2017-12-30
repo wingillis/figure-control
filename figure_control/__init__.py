@@ -6,14 +6,15 @@ from os.path import join
 
 class FigureControl(object):
 
-    def __init__(self, repo, final=False):
+    def __init__(self, repo, config_name='', final=False):
+        '''config_name is just the name of the file (no path)'''
         self.repo = clean_path(repo)
         assert os.path.exists(self.repo), 'Specified repo does not exist'
         assert is_git_repo(self.repo), 'Not a git repo'
 
         self.is_final = final
         self.hash = generate_commit_hash(self.repo)
-        self.options = load_config(self.repo)
+        self.options = load_config(self.repo, config_name)
         assert 'path' in self.options, 'No save path specified'
         self.options['path'] = clean_path(self.options['path'])
         self.fn = None

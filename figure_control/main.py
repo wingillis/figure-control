@@ -24,15 +24,16 @@ def clean_path(repo):
 
 @click.command()
 @click.option('--repo', '-p', default='.', type=click.Path(), help='Path to the repo to reference')
-@click.option('--final', '-f', is_flag=True)
-def main(repo, final):
+@click.option('--final', '-f', is_flag=True, help='Is this a final figure? (Defaults to exploratory figure generation)')
+@click.option('--config', '-c', default='', type=str)
+def main(repo, final, config):
     sys.excepthook = excepthook
 
     repo = clean_path(repo)
     assert os.path.exists(repo), 'Sorry repo does not exist, ' + repo
     assert is_git_repo(repo), 'Specified path is not a git repository: ' + repo
     # the config file should be in the code directory
-    options = load_config(repo)
+    options = load_config(repo, config)
 
     assert 'path' in options, 'No destination directory specified under `path` keyword'
     base_path = clean_path(options['path'])
@@ -61,8 +62,9 @@ def main(repo, final):
 def is_git_repo(path):
     return os.path.exists(join(path, '.git'))
 
-def load_config(repo):
-    conf_glob = '*.yaml'
+def load_config(repo, conf_glob=''):
+    if not conf_glob:
+        conf_glob = '*.yaml'
     # the config file should be in the code directory
     conf = glob(join(repo, conf_glob))
     assert len(conf) > 0, 'No config file found'
