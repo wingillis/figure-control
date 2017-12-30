@@ -20,7 +20,7 @@ function [save_path] = figure_control(repo, isfinal, conf_path)
     if contains(strs{1}, 'Your repo:')
       warning(strrep(strcat(strs{1:2}), sprintf('\t'), ' '));
     else
-      fprintf([strjoin(strs{1:end-1}, '\n') '\n']);
+      fprintf([strjoin(strs(1:end-1), '\n') '\n']);
     end
   end
   if status == 0
