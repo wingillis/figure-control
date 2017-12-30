@@ -56,6 +56,7 @@ class FigureControl(object):
         self.fn(sp, *args, **kwargs)
 
     def registerMatplotlibSaver(self):
+        # option for the save dirs to have sub dirs?
         def saver(path, figs, **kwargs):
             if isinstance(figs, (list, tuple)):
                 for i, fig in enumerate(figs):

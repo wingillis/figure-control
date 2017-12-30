@@ -80,7 +80,7 @@ def assemble_save_path(base_path, commit_hash, is_final_fig):
     # subdir is based on type of analysis happening
     dirtype = 'final' if is_final_fig else 'exploratory'
     today = date.today().strftime('%m-%d-%Y')
-    return join(base_path, today + '-' + commit_hash, dirtype)
+    return join(base_path, dirtype, today + '-' + commit_hash)
 
 def repo_is_dirty(repo_path):
     output = sh.check_output('git -C "{}" status --porcelain'.format(repo_path), shell=True)
@@ -106,7 +106,7 @@ def generate_commit_hash(repo):
 
 # add an option in the config to show the commit that created the figures
 
-# TODO: multiple path options just in case one doesn't exist already
+# TODO: multiple path options just in case one doesn't exist already?
 
 def generate_show_script(repo, commit_hash):
     bash = '#!/bin/bash\n'
