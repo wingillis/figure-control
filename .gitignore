@@ -1,6 +1,4 @@
-
+.DS_Store
 *.egg-info
-
 *.pyc
-
 figure_control.m

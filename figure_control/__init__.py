@@ -2,6 +2,7 @@ from figure_control.main import (clean_path, generate_commit_hash, repo_is_dirty
     assemble_save_path, load_config, is_git_repo, auto_commit, generate_show_script)
 import os
 import stat
+from os.path import join
 
 class FigureControl(object):
 
@@ -13,11 +14,14 @@ class FigureControl(object):
         self.is_final = final
         self.hash = generate_commit_hash(self.repo)
         self.options = load_config(self.repo)
+        assert 'path' in self.options, 'No save path specified'
+        self.options['path'] = clean_path(self.options['path'])
+        self.fn = None
 
     def getSavePath(self):
         if repo_is_dirty(self.repo):
             print('Warning: repo has changes, it is recommended you commit them')
-        return assemble_save_path(self.repo, self.options['path'], self.hash, self.is_final)
+        return assemble_save_path(self.options['path'], self.hash, self.is_final)
 
     def autoCommit(self):
         '''Returns the commit message'''
@@ -31,6 +35,7 @@ class FigureControl(object):
             os.makedirs(sp)
             if self.options.get('executable', False):
                 self.writeExecScript()
+        return sp
 
     def writeExecScript(self):
         exec_contents = generate_show_script(self.repo, self.hash)
@@ -44,7 +49,23 @@ class FigureControl(object):
         # let the user define their own save function that accepts a path str
         self.fn = function
 
-    def save(self):
+    def save(self, *args, **kwargs):
         # make sure that the path already exists
-        self.createSavePath()
-        self.fn(self.getSavePath())
+        sp = self.createSavePath()
+        self.fn(sp, *args, **kwargs)
+
+    def registerMatplotlibSaver(self):
+        def saver(path, figs, **kwargs):
+            if isinstance(figs, (list, tuple)):
+                for i, fig in enumerate(figs):
+                    fig.savefig(join(path, str(i) + '.png'), **kwargs)
+                    fig.savefig(join(path, str(i) + '.pdf'), **kwargs)
+            elif isinstance(figs, dict):
+                for fname, fig in figs.items():
+                    fig.savefig(join(path, fname + '.png'), **kwargs)
+                    fig.savefig(join(path, fname + '.pdf'), **kwargs)
+            else:
+                figs.savefig(join(path, 'fig1.png'), **kwargs)
+                figs.savefig(join(path, 'fig1.pdf'), **kwargs)
+
+        self.fn = saver

@@ -41,7 +41,7 @@ def main(repo, final):
         click.echo('Your repo: {}\n\thas some unstaged changes, it is recommended that you commit them'.format(repo))
 
     commit_hash = generate_commit_hash(repo)
-    save_path = assemble_save_path(repo, base_path, commit_hash, final)
+    save_path = assemble_save_path(base_path, commit_hash, final)
     # check if save_path exists
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -73,7 +73,7 @@ def load_config(repo):
     assert 'figure-control' in options, 'Required key figure-control not in config file: ' + conf
     return options['figure-control']
 
-def assemble_save_path(repo_path, base_path, commit_hash, is_final_fig):
+def assemble_save_path(base_path, commit_hash, is_final_fig):
     # subdir is based on type of analysis happening
     dirtype = 'final' if is_final_fig else 'exploratory'
     return join(base_path, commit_hash, dirtype)
