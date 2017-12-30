@@ -13,6 +13,7 @@ import subprocess as sh
 import shutil
 import click
 import yaml
+from datetime import date
 
 def excepthook(t, value, traceback):
     print(value)
@@ -78,7 +79,8 @@ def load_config(repo, conf_glob=''):
 def assemble_save_path(base_path, commit_hash, is_final_fig):
     # subdir is based on type of analysis happening
     dirtype = 'final' if is_final_fig else 'exploratory'
-    return join(base_path, commit_hash, dirtype)
+    today = date.today().strftime('%m-%d-%Y')
+    return join(base_path, today + '-' + commit_hash, dirtype)
 
 def repo_is_dirty(repo_path):
     output = sh.check_output('git -C "{}" status --porcelain'.format(repo_path), shell=True)
