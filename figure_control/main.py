@@ -115,6 +115,8 @@ def git_root_dir(path):
 
 # TODO: multiple path options just in case one doesn't exist already?
 
+# should I also save the diff of the commit to the figure directory?
+
 def generate_show_script(repo, commit_hash):
     bash = '#!/bin/bash\n'
     bash += 'git -C "{}" checkout {}\n'.format(repo, commit_hash)
