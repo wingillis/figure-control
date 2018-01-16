@@ -61,6 +61,9 @@ def main(repo, final, config):
             exec_file_path = join(save_path, 'goto-commit-{}'.format(commit_hash))
             with open(exec_file_path, 'w') as exec_file:
                 exec_file.write(exec_contents)
+            diff = generate_diff(repo, commit_hash)
+            with open(join(save_path, 'diff.txt'), 'w') as diff_file:
+                diff_file.write(diff)
             st = os.stat(exec_file_path)
             os.chmod(exec_file_path, st.st_mode | stat.S_IEXEC)
 
@@ -93,6 +96,10 @@ def repo_is_dirty(repo):
     '''Returns True if there are unstaged changes in the specified repo'''
     output = sh.check_output('git -C "{}" status --porcelain'.format(repo), shell=True)
     return output != b''
+
+def generate_diff(repo, h):
+    output = sh.check_output('git -C "{}" --no-pager diff {}~1 {}'.format(repo, h, h), shell=True)
+    return output
 
 def generate_commit_hash(repo):
     return sh.check_output('git -C "{}" rev-parse HEAD | cut -c1-7'.format(repo),
