@@ -61,11 +61,12 @@ def main(repo, final, config):
             exec_file_path = join(save_path, 'goto-commit-{}'.format(commit_hash))
             with open(exec_file_path, 'w') as exec_file:
                 exec_file.write(exec_contents)
-            diff = generate_diff(repo, commit_hash)
-            with open(join(save_path, 'diff.txt'), 'w') as diff_file:
-                diff_file.write(diff)
             st = os.stat(exec_file_path)
             os.chmod(exec_file_path, st.st_mode | stat.S_IEXEC)
+
+        diff = generate_diff(repo, commit_hash)
+        with open(join(save_path, 'diff.txt'), 'w') as diff_file:
+            diff_file.write(diff)
 
     click.echo(save_path)
 
@@ -99,7 +100,7 @@ def repo_is_dirty(repo):
 
 def generate_diff(repo, h):
     output = sh.check_output('git -C "{}" --no-pager diff {}~1 {}'.format(repo, h, h), shell=True)
-    return output
+    return output.decode('utf-8')
 
 def generate_commit_hash(repo):
     return sh.check_output('git -C "{}" rev-parse HEAD | cut -c1-7'.format(repo),
@@ -121,8 +122,6 @@ def git_root_dir(path):
 # add an option in the config to show the commit that created the figures
 
 # TODO: multiple path options just in case one doesn't exist already?
-
-# should I also save the diff of the commit to the figure directory?
 
 def generate_show_script(repo, commit_hash):
     bash = '#!/bin/bash\n'
