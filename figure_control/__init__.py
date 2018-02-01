@@ -59,6 +59,8 @@ class FigureControl(object):
 
     def registerSaver(self, function):
         # let the user define their own save function that accepts a path str
+        # def fun(self, *args, **kwargs):
+        #     return function(*args, **kwargs)
         self.fn = function
 
     def save(self, *args, **kwargs):

@@ -143,7 +143,7 @@ def auto_commit(repo_path, max_commit_len=500):
     # now commit with the diff as the message
     sh.check_call('git -C "{}" add --all'.format(repo_path), shell=True)
     # only keep max_commit_len characters tho
-    sh.check_call('git -C "{}" commit -m "{}" --quiet'.format(repo_path, diff_to_commit[:max_commit_len]), shell=True)
+    sh.check_call('git -C "{}" commit -m "{}" --quiet'.format(repo_path, diff_to_commit[:max_commit_len].replace('"', "'")), shell=True)
     return diff_to_commit[:max_commit_len]
 
 if __name__ == '__main__':
