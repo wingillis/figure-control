@@ -24,14 +24,9 @@ class FigureControl(object):
 
         self.fn = None
 
-    def getSavePath(self):
-        if repo_is_dirty(self.repo):
-            if self.options.get('auto-commit', False):
-                print('Auto-commit is on, committing repo changes...')
-                self.autoCommit()
-            else:
-                print('Warning: repo has changes, it is recommended you commit them')
-        return assemble_save_path(self.options['path'], self.hash,  self.commit_count, self.is_final)
+    @property
+    def savePath(self):
+        return assemble_save_path(self.options['path'], self.hash, self.commit_count, self.is_final)
 
     def autoCommit(self):
         '''Returns the commit message'''
@@ -42,7 +37,14 @@ class FigureControl(object):
 
     def createSavePath(self):
         '''If save path doesn't exist, create it'''
-        sp = self.getSavePath()
+        # check if the repo has new code and if it does, auto commit it, if that setting is turned on
+        if repo_is_dirty(self.repo):
+            if self.options.get('auto-commit', False):
+                print('Auto-commit is on, committing repo changes...')
+                self.autoCommit()
+            else:
+                print('Warning: repo has changes, it is recommended you commit them')
+        sp = self.savePath
         if not os.path.exists(sp):
             os.makedirs(sp)
             if self.options.get('executable', False):
@@ -51,7 +53,7 @@ class FigureControl(object):
 
     def writeExecScript(self):
         exec_contents = generate_show_script(self.repo, self.hash)
-        exec_file_path = join(self.getSavePath(), 'goto-commit-{}'.format(self.hash))
+        exec_file_path = join(self.savePath, 'goto-commit-{}'.format(self.hash))
         with open(exec_file_path, 'w') as exec_file:
             exec_file.write(exec_contents)
         st = os.stat(exec_file_path)
@@ -73,14 +75,14 @@ class FigureControl(object):
         def saver(path, figs, **kwargs):
             if isinstance(figs, (list, tuple)):
                 for i, fig in enumerate(figs):
-                    fig.savefig(join(path, str(i) + '.png'), **kwargs)
-                    fig.savefig(join(path, str(i) + '.pdf'), **kwargs)
+                    fig.savefig(join(path, 'fig_{:04d}.png'.format(i)), **kwargs)
+                    fig.savefig(join(path, 'fig_{:04d}.pdf'.format(i)), **kwargs)
             elif isinstance(figs, dict):
                 for fname, fig in figs.items():
                     fig.savefig(join(path, fname + '.png'), **kwargs)
                     fig.savefig(join(path, fname + '.pdf'), **kwargs)
             else:
-                figs.savefig(join(path, 'fig1.png'), **kwargs)
-                figs.savefig(join(path, 'fig1.pdf'), **kwargs)
+                figs.savefig(join(path, 'fig_0001.png'), **kwargs)
+                figs.savefig(join(path, 'fig_0001.pdf'), **kwargs)
 
-        self.fn = saver
+        self.registerSaver(saver)
