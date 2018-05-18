@@ -35,6 +35,13 @@ class FigureControl(object):
         self.commit_count = get_commit_count(self.repo, self.hash)
         return diff
 
+    def setSavePath(self, p):
+        self.options['old-path'] = self.options['path']
+        self.options['path'] = clean_path(p)
+
+    def resetSavePath(self):
+        self.options['path'] = self.options['old-path']
+
     def createSavePath(self):
         '''If save path doesn't exist, create it'''
         # check if the repo has new code and if it does, auto commit it, if that setting is turned on
