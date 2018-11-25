@@ -3,3 +3,4 @@
 *.pyc
 figure_control.m
 .vscode
+__pycache__
