@@ -1,3 +1,4 @@
+from figure_control.base import FigureControl
 from figure_control.main import (clean_path, generate_commit_hash, repo_is_dirty,
     assemble_save_path, load_config, is_git_repo, auto_commit, generate_show_script,
     get_commit_count, git_root_dir)

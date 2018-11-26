@@ -4,6 +4,10 @@ function [save_path] = figure_control(repo, isfinal, conf_path)
   % example usage for convencience:
   % getProjSave = @() figure_control('/path/to/repo', false);
   % then call `getProjSave()` whenever you're about to save a figure
+
+  % pypath will be replaced with the path to the python binary once
+  % it is installed on a user's system. Check out `figure_control.m`
+  % after it's generated from the pip install to see
   cmdstr = sprintf('{pypath} --repo="%s"', repo);
   if nargin < 2 || isempty(isfinal) || ~isfinal
     % do nothing

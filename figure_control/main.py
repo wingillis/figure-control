@@ -14,14 +14,11 @@ import shutil
 import click
 import yaml
 from datetime import date
+from figure_control.util import clean_path
 
 def excepthook(t, value, traceback):
     print(value)
 
-def clean_path(repo):
-    repo = os.path.expanduser(repo)
-    repo = os.path.abspath(repo)
-    return repo
 
 @click.command()
 @click.option('--repo', '-p', default='.', type=click.Path(), help='Path to the repo to reference')

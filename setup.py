@@ -33,7 +33,7 @@ setup(
     description="A tool to keep track of which code commit generated which figures",
     keywords="version-control figure git",
     url="https://github.com/wingillis/figure-control",   # project home page, if any
-    install_requires=['click', 'PyYAML', 'GitPython'],
+    install_requires=['click', 'ruamel.yaml', 'GitPython'],
     entry_points={
         'console_scripts': ['figure-control = figure_control.main:main']
     }
