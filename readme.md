@@ -4,8 +4,8 @@ Figure Control aims to solve problems many researchers have for
 managing the reproducibility of figures they create.
 
 To ease the pain of linking different figure versions with the code that
-generated them, Figure Control automatically handles much of the heavy lifting
-for committing your code, generating a consistent save path, linking the
+generated them, Figure Control handles much of the heavy lifting
+for committing changes to your code, generating a consistent save path, linking the
 commit that generated your figures to the save path, and separating exploratory
 vs final figures.
 
@@ -90,7 +90,6 @@ getProjSave = @() figure_control('/path/to/repo');
 
 and it will execute and parse the CLI to give you the path to save your figures.
 
-
 ### Python
 
 The module is slightly more feature-rich than the CLI. For instance, you can
@@ -103,7 +102,10 @@ fig_ctrl = FC('/path/to/repo')
 # change some code in the repository, next time you get a save path, you will
 # get a warning that code has changed in the repository
 # commit the changes, with the changes as the commit message like so:
-fig_ctrl.autoCommit()
+fig_ctrl.commit()
+
+# you can also specify your own commit message:
+fig_ctrl.commit('trying a new bootstrap method')
 
 # - create a save path
 # - this is only needed if you want to manually save your figures
@@ -115,7 +117,7 @@ save_path = fig_ctrl.createSavePath()
 
 # if you just want to know what the current folder save path is, grab it by
 # typing:
-save_path = fig_ctrl.savePath
+save_path = fig_ctrl.save_path
 
 # register a save function
 # the class automatically will fill in the save path so you don't have to worry
@@ -126,7 +128,7 @@ def save(path, name, fig, **kwargs):
   fig.savefig(os.path.join(path, name + '.pdf'))
 
 # this registers a function so that you can call it with `fig_ctrl.save()`
-fig_ctrl.registerSaver(save)
+fig_ctrl.addSavingFun(save)
 
 
 # plot some data with matplotlib
@@ -139,7 +141,7 @@ fig_ctrl.save('line', fig1, dpi=300)
 
 # because matplotlib is one of the most popular ways to generate figures in
 # python, a special function is included to easily save matplotlib figures:
-fig_ctrl.registerMatplotlibSaver()
+fig_ctrl.registerMPLSaver()
 
 # to save your figures with it, either store your figures in a `list`,
 # and files will be saved with a numerical file name, i.e. fig_0001, fig_0002, fig_0003, or
@@ -154,8 +156,9 @@ fig_ctrl.save([fig1, fig1])
 ```
 
 Every time `createSavePath` is run, it will check if any
-code has changed in the repository. It will `autoCommit` you repository if
-that option is true in your `yaml` config file.
+code has changed in the repository. It will `auto-commit` your repository if
+that option is true in your `yaml` config file and you've made changes to the
+code in your repository.
 
 ## Developing an interface for another language
 
