@@ -15,7 +15,7 @@ def excepthook(t, value, traceback):
 @click.command()
 @click.option('--repo', '-p', default='.', type=click.Path(), help='Path to the repo to reference')
 @click.option('--final', '-f', is_flag=True, help='Is this a final figure? (Defaults to exploratory figure generation)')
-@click.option('--config', '-c', default=None type=str)
+@click.option('--config', '-c', default=None, type=str)
 def main(repo, final, config):
     sys.excepthook = excepthook
 

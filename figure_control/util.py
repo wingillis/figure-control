@@ -29,8 +29,8 @@ def load_config(config_path: str) -> dict:
     options = yaml.load(f, Loader=yaml.SafeLoader)
   
   # some assertions to make sure that we are reading in the proper config file
-  assert options is not None, 'Nothing seems to be in the config file ' + conf
-  assert 'figure-control' in options, 'Required key figure-control not in config file: ' + conf
+  assert options is not None, 'Nothing seems to be in the config file ' + file
+  assert 'figure-control' in options, 'Required key figure-control not in config file: ' + file
   assert 'path' in options['figure-control'], 'No save path specified'
 
   return options['figure-control']

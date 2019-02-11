@@ -13,6 +13,7 @@ import os
 import stat
 import warnings
 from git import Repo
+from os.path import join
 from figure_control.util import (load_config, clean_path, create_save_path,
                                  generate_show_script)
 from typing import Callable
